@@ -1,4 +1,6 @@
-﻿namespace ImageDownloadUtility
+﻿using System;
+
+namespace ImageDownloadUtility
 {
     partial class IDUManager
     {
@@ -126,6 +128,7 @@
             this.btnBrowse.TabIndex = 12;
             this.btnBrowse.Text = "...";
             this.btnBrowse.UseVisualStyleBackColor = true;
+            this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
             // 
             // label1
             // 
@@ -139,6 +142,7 @@
             // 
             // txtFilePath
             // 
+            this.txtFilePath.Enabled = false;
             this.txtFilePath.Font = new System.Drawing.Font("Microsoft Tai Le", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtFilePath.Location = new System.Drawing.Point(12, 85);
             this.txtFilePath.Name = "txtFilePath";
@@ -161,7 +165,8 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtFilePath);
             this.Name = "IDUManager";
-            this.Text = "Form1";
+            this.Text = "Image Downloading Utility";
+            this.Load += new System.EventHandler(this.IDUManager_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

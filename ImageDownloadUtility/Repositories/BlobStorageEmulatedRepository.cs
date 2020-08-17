@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ImageDownloadingUtility.Storage
+namespace ImageDownloadingUtility.Repositories
 {
-    public class LocalMachineStorage : StorageRespository
+    public class BlobStorageEmulatedRepository : StorageRespository
     {
         public override async Task UploadFileAsync(string filePath, string blobDirectory, string blobName = null)
         {

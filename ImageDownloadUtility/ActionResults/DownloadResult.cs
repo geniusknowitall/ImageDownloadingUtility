@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ImageDownloadingUtility.DownloadHelper
+namespace ImageDownloadingUtility.ActionResults
 {
     public class DownloadResult
     {
         public bool IsSuccess { get; set; }
         public string FileName { get; set; }
-        public DateTime CapturedInstance { get; set; }
+        public DateTime ImageCapturedFor { get; set; }
     }
 }

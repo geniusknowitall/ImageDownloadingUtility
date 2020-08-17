@@ -1,4 +1,6 @@
-﻿using ImageDownloadingUtility.Storage;
+﻿using ImageDownloadingUtility.ActionResults;
+using ImageDownloadingUtility.Entities;
+using ImageDownloadingUtility.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,21 +10,21 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ImageDownloadingUtility.DownloadHelper
+namespace ImageDownloadingUtility.Helpers.DownloadHelpers
 {
-    public class RTSPLiveStream : ImageDownloadHelper
+    public class RTSPLiveStream : ImageDownloader
     {
         private const bool SHOULD_WAIT_BEFORE_NEXT_CAPTURE = true;
         protected override bool IsDownloadingCompleted
         {
             get
             {
-                return TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.Local, this.Store.TimeZone).TimeOfDay >= this.Store.CloseTime.TimeOfDay;
+                return TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.Local, this.Store.TimeZone).TimeOfDay >= this.Store.CloseTime;
             }
         }
 
-        public RTSPLiveStream(Store store) 
-            : base(store, store.IntervalInMilliSeconds, SHOULD_WAIT_BEFORE_NEXT_CAPTURE, new BlobStorage("imagescontainer"), new CancellationTokenSource())
+        public RTSPLiveStream(Store store, StorageRespository storageRepository, Action<ImageDownloader, Camera> onImageCaptured, Action<ImageDownloader, Camera> onImageSkipped, Action<ImageDownloader, Store> onDownloadingCompleted) 
+            : base(store, storageRepository, store.IntervalInMinutes, SHOULD_WAIT_BEFORE_NEXT_CAPTURE, onImageCaptured, onImageSkipped, onDownloadingCompleted)
         {
         }
 
@@ -31,10 +33,10 @@ namespace ImageDownloadingUtility.DownloadHelper
             cancellationToken.ThrowIfCancellationRequested();
 
             DateTime currentTimeInTimezone = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.Local, this.Store.TimeZone);
-            string fileName = string.Concat(camera.Store.SavingPath, "/", camera.Name, "/", currentTimeInTimezone.ToString("yyyyMMddThhmmssZ"), ".jpg");
+            string fileName = $"{camera.Store.SavePath}/{camera.Name}/{currentTimeInTimezone.ToString("yyyyMMddTHHmm00Z")}.jpg";
 
             Process process = new Process();
-            process.StartInfo.FileName = @"C:\Users\User\Downloads\ffmpeg\bin\ffmpeg.exe";
+            process.StartInfo.FileName = @"C:\Users\IT Desktop\Downloads\ffmpeg\bin\ffmpeg.exe";
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
             process.StartInfo.UseShellExecute = false;
@@ -56,18 +58,18 @@ namespace ImageDownloadingUtility.DownloadHelper
 
             if (isFileDownloaded)
             {
-                camera.SavedCount++;
+                camera.SavedImagesCount++;
             }
             else
             {
-                camera.SkippedImages.Add(currentTimeInTimezone);
+                camera.SkippedImagesCount++;
             }
 
             return new DownloadResult()
             {
                 FileName = fileName,
                 IsSuccess = isFileDownloaded,
-                CapturedInstance = currentTimeInTimezone
+                ImageCapturedFor = currentTimeInTimezone
             };
         }
     }

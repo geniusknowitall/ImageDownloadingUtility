@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ImageDownloadingUtility.Storage
+namespace ImageDownloadingUtility.Repositories
 {
-    public class BlobStorage : StorageRespository
+    public class BlobStorageRepository : StorageRespository
     {
         private CloudBlobContainer cloudBlobContainer { get; set; }
         private string storageConnectionString
@@ -20,7 +20,7 @@ namespace ImageDownloadingUtility.Storage
             }
         }
 
-        public BlobStorage(string containerName)
+        public BlobStorageRepository(string containerName)
         {
             CloudBlobClient cloudBlobClient = CloudStorageAccount.Parse(storageConnectionString).CreateCloudBlobClient();
 
